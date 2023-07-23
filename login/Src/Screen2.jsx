@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Image, Text, StyleSheet, TextInput, TouchableOpacity, Linking, KeyboardAvoidingView,
-  TouchableWithoutFeedback, Keyboard,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -12,15 +11,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    marginTop: 50,
+    marginTop: 40,
     width: 223,
     height: 64,
+    flex: 0,
+    order: 0,
     flexGrow: 0,
   },
   register: {
     width: 227,
     height: 28,
-    marginTop: 100,
+    marginTop: 120,
     marginLeft: 16,
     fontSize: 16,
     lineHeight: 28,
@@ -50,12 +51,6 @@ const styles = StyleSheet.create({
     height: 42,
     margin: 16,
   },
-  regview1: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    fontSize: 16,
-  },
   activeButton: {
     marginTop: 23,
     backgroundColor: '#2F4D8B',
@@ -79,13 +74,16 @@ const styles = StyleSheet.create({
     lineHeight: 19.92,
     marginLeft: 16,
     marginRight: 16,
+    marginBottom: 180,
+    height: 'auto',
+    width: 343,
   },
   Need: {
     padding: 10,
     fontSize: 16,
     lineHeight: 19.92,
     textAlign: 'center',
-    marginTop: 350,
+    // marginTop: 110,
   },
   supportText: {
     padding: 10,
@@ -107,29 +105,25 @@ const Screen2 = () => {
   const handleNextButton = (phoneNumber) => {
     if (phoneNumber.length === 10) {
       navigation.navigate('Screen3', { phoneNumber });
+    } else {
+      navigation.navigate('Screen4');
     }
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.container}
-      >
-        <View style={styles.container}>
-          <Image
-            style={styles.logo}
-            source={require('./GAT.jpeg')}
-          />
-          {/* Rendering the PhoneNumberInput component */}
-          <PhoneNumberInput onNextButton={handleNextButton} />
-        </View>
-      </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
+    <TouchableOpacity style={styles.container} onPress={handleTap}>
+      <View style={styles.container}>
+        <Image
+          style={styles.logo}
+          source={require('./GAT.jpeg')}
+        />
+        {/* Render PhoneNumberInput component */}
+        <PhoneNumberInput onNextButton={handleNextButton} />
+      </View>
+    </TouchableOpacity>
   );
 };
 
-//here is PhoneNumberInput component
 const PhoneNumberInput = ({ onNextButton }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isButtonActive, setIsButtonActive] = useState(false);
@@ -163,18 +157,15 @@ const PhoneNumberInput = ({ onNextButton }) => {
           placeholder="Enter phone number"
           value={phoneNumber}
           onChangeText={handlePhoneNumberChange}
-          maxLength={100}
+          maxLength={10}
         />
-        <View style={styles.regview1}>
-          {/* Rendering the "Next" button */}
-          <TouchableOpacity
-            style={isButtonActive ? styles.activeButton : styles.button}
-            onPress={handleNextButton}
-            disabled={!isButtonActive}
-          >
-            <Text style={styles.buttonText}>Next</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={isButtonActive ? styles.activeButton : styles.button}
+          onPress={handleNextButton}
+          disabled={!isButtonActive}
+        >
+          <Text style={styles.buttonText}>Next</Text>
+        </TouchableOpacity>
       </KeyboardAvoidingView>
       <Text style={styles.text}>
         By proceeding, you consent to get SMS messages including by automated means, from Gig and Take and its affiliates

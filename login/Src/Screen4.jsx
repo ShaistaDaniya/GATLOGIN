@@ -65,13 +65,14 @@ const styles = StyleSheet.create({
     color: '#2F4D8B',
     fontSize: 16,
     textAlign: 'center',
-    marginTop: 10,
+    marginTop: 4,
   },
   buttonText2: {
     color: 'white',
     fontSize: 16,
     textAlign: 'center',
-    margiflexTop: 10,
+    marginTop: 8,
+ 
   },
   Need: {
     padding: 10,
@@ -94,8 +95,11 @@ const Screen4 = () => {
   const navigation = useNavigation();
   const [countdown, setCountdown] = useState(3);
 
+  // Define the intervalId at the top level
+  let intervalId;
+
+  // The countdown effect
   useEffect(() => {
-    let intervalId;
     if (countdown > 0) {
       intervalId = setInterval(() => {
         setCountdown((prevCountdown) => prevCountdown - 1);
@@ -107,11 +111,13 @@ const Screen4 = () => {
     return () => clearInterval(intervalId);
   }, [countdown, navigation]);
 
+  // The handleNextButton function
   const handleNextButton = () => {
     clearInterval(intervalId); // Stop the countdown when a button is pressed
     navigation.navigate('Screen2');
   };
 
+  // The handleSupportTextPress function
   const handleSupportTextPress = () => {
     const supportURL = ''; // Replace with your contact web page URL
     Linking.openURL(supportURL);
@@ -120,6 +126,7 @@ const Screen4 = () => {
   return (
     <View style={styles.container}>
       <Image style={styles.logo} source={require('./GAT.jpeg')} />
+      {/* Render PhoneNumberInput component */}
       <PhoneNumberInput
         handleNextButton={handleNextButton}
         handleSupportTextPress={handleSupportTextPress}
@@ -133,19 +140,34 @@ const PhoneNumberInput = ({
   handleNextButton,
   handleSupportTextPress,
 }) => {
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [isButtonActive, setIsButtonActive] = useState(false);
+
+  useEffect(() => {
+    setIsButtonActive(phoneNumber.length === 10);
+  }, [phoneNumber]);
+
+  const handlePhoneNumberChange = (text) => {
+    const formattedNumber = text.replace(/[^0-9]/g, '');
+    setPhoneNumber(formattedNumber);
+  };
+
+  const handleNextButtonPress = () => {
+    console.log('Next button clicked');
+    handleNextButton();
+  };
+
   return (
     <View style={styles.regview}>
-      <Text style={styles.register}>
-        Your mobile number is not registered with us!
-      </Text>
+      <Text style={styles.register}>Your mobile number is not registered with us!</Text>
       <Text style={styles.txt}>
         We have currently enrolled limited people. If you are interested in getting flexible factory jobs, please register your interest and we will get back to you
       </Text>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button1} onPress={handleNextButton}>
+        <TouchableOpacity style={styles.button1} onPress={handleNextButtonPress}>
           <Text style={styles.buttonText1}>Return To Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button2} onPress={handleNextButton}>
+        <TouchableOpacity style={styles.button2} onPress={handleNextButtonPress}>
           <Text style={styles.buttonText2}>Register Now</Text>
         </TouchableOpacity>
       </View>

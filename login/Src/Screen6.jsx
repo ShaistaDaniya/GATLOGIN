@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
-import { View, Image, Text, StyleSheet, TextInput, TouchableOpacity, Linking } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Image, Text, StyleSheet, TextInput, TouchableOpacity, Linking, Keyboard } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const styles = StyleSheet.create({
   container: {
@@ -10,8 +11,6 @@ const styles = StyleSheet.create({
   logo: {
     width: 223,
     height: 64,
-    flex: 'none',
-    order: 0,
     flexGrow: 0,
   },
   enter: {
@@ -79,6 +78,10 @@ const styles = StyleSheet.create({
     borderColor: 'red',
     borderWidth: 2,
   },
+  filledPasscodeBoxSuccess: {
+    borderColor: '#2F4D8B',
+    borderWidth: 2,
+  },
   resend: {
     fontSize: 16,
     marginLeft: 124,
@@ -95,22 +98,41 @@ const styles = StyleSheet.create({
 });
 
 const Screen6 = () => {
+  const navigation = useNavigation();
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setIsKeyboardOpen(true);
+    });
+
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setIsKeyboardOpen(false);
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isKeyboardOpen && { paddingTop: 100 }]}>
       <Image
         style={styles.logo}
         source={require('./GAT.jpeg')}
       />
-      <PasscodeScreen />
+      <PasscodeScreen onSuccess={() => navigation.navigate('LastScreen')} onFail={() => navigation.navigate('BYEScreen')} />
     </View>
   );
 };
 
-const PasscodeScreen = () => {
+const PasscodeScreen = ({ onSuccess, onFail }) => {
   const [passcode, setPasscode] = useState(['', '', '', '']);
   const [passcodeError, setPasscodeError] = useState(false);
   const [selectedBox, setSelectedBox] = useState(null);
   const passcodeInputs = useRef([]);
+  const [hoveredBox, setHoveredBox] = useState(null);
 
   const handlePasscodeChange = (index, value) => {
     const updatedPasscode = [...passcode];
@@ -128,9 +150,11 @@ const PasscodeScreen = () => {
     if (passcode.join('') === correctPasscode) {
       console.log('Success: Passcode verified!');
       setPasscodeError(false);
+      onSuccess(); // Navigate to the LastScreen on correct passcode
     } else {
       console.log('Error: Passcode verification failed!');
       setPasscodeError(true);
+      onFail(); // Navigate to the BYEScreen on incorrect passcode
     }
   };
 
@@ -154,20 +178,27 @@ const PasscodeScreen = () => {
               digit && styles.filledPasscodeBox,
               selectedBox === index && styles.selectedPasscodeBox,
               passcodeError && digit && styles.filledPasscodeBoxError,
+              hoveredBox === index && styles.filledPasscodeBoxSuccess,
             ]}
             autoFocus={index === 0}
-            onKeyPress={({ nativeEvent }) => {  
+            onKeyPress={({ nativeEvent }) => {
               if (nativeEvent.key === 'Backspace' && !digit && index > 0) {
                 passcodeInputs.current[index - 1].focus();
               }
             }}
+            onFocus={() => setHoveredBox(index)}
+            onBlur={() => setHoveredBox(null)}
           />
         ))}
       </View>
 
       {passcodeError && <Text style={styles.errorText}>Incorrect passcode entered. Try Again!</Text>}
 
-      <TouchableOpacity style={styles.button} onPress={handleVerifyPasscode}>
+      <TouchableOpacity
+        style={[styles.button, passcode.join('').length === 4 && { backgroundColor: '#2F4D8B' }]}
+        onPress={handleVerifyPasscode}
+        disabled={passcode.join('').length !== 4}
+      >
         <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>
       <Text style={styles.resend}>Resend Passcode</Text>
