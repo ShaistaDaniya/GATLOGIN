@@ -10,7 +10,7 @@ const styles = {
       logo: {
         width: 223,
         height: 64,
-        flex: 'none',
+        // flex: 'none',
         order: 0,
         flexGrow: 0,
       },

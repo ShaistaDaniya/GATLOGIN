@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Image, Text, StyleSheet, TextInput, TouchableOpacity, Linking, KeyboardAvoidingView,
+  TouchableWithoutFeedback, Keyboard,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -14,14 +15,12 @@ const styles = StyleSheet.create({
     marginTop: 50,
     width: 223,
     height: 64,
-    flex: 0,
-    order: 0,
     flexGrow: 0,
   },
   register: {
     width: 227,
     height: 28,
-    marginTop: 60,
+    marginTop: 100,
     marginLeft: 16,
     fontSize: 16,
     lineHeight: 28,
@@ -34,7 +33,7 @@ const styles = StyleSheet.create({
   },
   num: {
     height: 56,
-    width:343,
+    width: 343,
     borderColor: '#2F4D8B',
     padding: 10,
     borderWidth: 1,
@@ -50,7 +49,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     height: 42,
     margin: 16,
-    
+  },
+  regview1: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: 16,
   },
   activeButton: {
     marginTop: 23,
@@ -81,7 +85,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19.92,
     textAlign: 'center',
-    marginTop: 110,
+    marginTop: 350,
   },
   supportText: {
     padding: 10,
@@ -107,18 +111,25 @@ const Screen2 = () => {
   };
 
   return (
-    <TouchableOpacity style={styles.container} onPress={handleTap}>
-      <View style={styles.container}>
-        <Image
-          style={styles.logo}
-          source={require('./GAT.jpeg')}
-        />
-        <PhoneNumberInput onNextButton={handleNextButton} />
-      </View>
-    </TouchableOpacity>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={styles.container}
+      >
+        <View style={styles.container}>
+          <Image
+            style={styles.logo}
+            source={require('./GAT.jpeg')}
+          />
+          {/* Rendering the PhoneNumberInput component */}
+          <PhoneNumberInput onNextButton={handleNextButton} />
+        </View>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
+//here is PhoneNumberInput component
 const PhoneNumberInput = ({ onNextButton }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isButtonActive, setIsButtonActive] = useState(false);
@@ -152,15 +163,18 @@ const PhoneNumberInput = ({ onNextButton }) => {
           placeholder="Enter phone number"
           value={phoneNumber}
           onChangeText={handlePhoneNumberChange}
-          maxLength={10}
+          maxLength={100}
         />
-        <TouchableOpacity
-          style={isButtonActive ? styles.activeButton : styles.button}
-          onPress={handleNextButton}
-          disabled={!isButtonActive}
-        >
-          <Text style={styles.buttonText}>Next</Text>
-        </TouchableOpacity>
+        <View style={styles.regview1}>
+          {/* Rendering the "Next" button */}
+          <TouchableOpacity
+            style={isButtonActive ? styles.activeButton : styles.button}
+            onPress={handleNextButton}
+            disabled={!isButtonActive}
+          >
+            <Text style={styles.buttonText}>Next</Text>
+          </TouchableOpacity>
+        </View>
       </KeyboardAvoidingView>
       <Text style={styles.text}>
         By proceeding, you consent to get SMS messages including by automated means, from Gig and Take and its affiliates

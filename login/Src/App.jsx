@@ -10,7 +10,6 @@ import Screen4 from './Screen4';
 import Screen5 from './Screen5';
 import Screen6 from './Screen6';
 import LastScreen from './LastScreen';
-
 const Stack = createStackNavigator();
 
 const App = () => {
