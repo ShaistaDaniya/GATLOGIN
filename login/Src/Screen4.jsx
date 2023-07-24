@@ -125,7 +125,7 @@ const Screen4 = () => {
 
   return (
     <View style={styles.container}>
-      <Image style={styles.logo} source={require('./GAT.jpeg')} />
+      <Image style={styles.logo} source={require('./GATlogo.png')} />
       {/* Render PhoneNumberInput component */}
       <PhoneNumberInput
         handleNextButton={handleNextButton}

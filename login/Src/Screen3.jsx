@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Text, View, ActivityIndicator, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Screen2 from './Screen2';
 
 const styles = StyleSheet.create({
   container: {

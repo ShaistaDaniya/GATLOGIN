@@ -39,7 +39,7 @@ const Screen1 = () => {
       <TouchableOpacity onPress={handlePress}>
         <Image
           style={styles.logo}
-          source={require('./GAT.jpeg')}
+          source={require('./GATlogo.png')}
         />
       </TouchableOpacity>
     </View>

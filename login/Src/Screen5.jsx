@@ -133,7 +133,7 @@ const Screen5 = () => {
     <View style={[styles.container, isKeyboardOpen && { paddingTop: 100 }]}>
       <Image
         style={styles.logo}
-        source={require('./GAT.jpeg')}
+        source={require('./GATlogo.png')}
       />
       <PasscodeScreen onSuccess={handlePasscodeSuccess} onFail={handlePasscodeFail} />
     </View>
